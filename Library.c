@@ -2,8 +2,40 @@
 #include<stdio.h>
 #include<stdlib.h>
 
+int getMax(int arr[], int n) {
+	int mx = arr[0], i;
+	for (i = 1; i < n; i++)
+		if (arr[i] > mx)
+			mx = arr[i];
+	return mx;
+}
 
-void print_list(Nod *head) {
+void swapp(int* a, int* b) {
+	int t = *a;
+	*a = *b;
+	*b = t;
+}
+
+int rucsac(int n, int g) {
+	static int d[100], w[100], p[100], i, j, ans;
+	for (i = 1; i <= n; i++)
+		scanf("%d%d", &w[i], &p[i]);
+	d[0] = 1;
+
+	for (i = 1; i <= n; i++)
+		for (j = g; j >= w[i]; j--)
+			if (d[j - w[i]] && p[i] + d[j - w[i]] >= d[j])
+				d[j] = p[i] + d[j - w[i]];
+
+	for (i = 0; i <= g; i++) {
+		if (d[i]>ans)
+			ans = d[i];
+	}
+	return ans - 1;
+}
+
+void print_list(Nod *head) 
+{
 	if (head->next != NULL) {                     // daca lista nu este goala
 		Nod *current = head;                    //nodul curent primeste head
 		do {
@@ -18,7 +50,8 @@ void print_list(Nod *head) {
 }
 
 // adaugam elemente din stanga listei, ca la stiva
-void push_first(Nod *head, int val) {
+void push_first(Nod *head, int val)
+{
 	Nod *new_nod;                               //creez un nod nou
 	new_nod = (Nod*)malloc(sizeof(Nod));        // aloc memmorie pentru noul nod
 	new_nod->data = val;                        //se da valoarea noului element
@@ -27,7 +60,8 @@ void push_first(Nod *head, int val) {
 }
 
 //adaugam elemente la dreapta listei, ca la vector
-void push_last(Nod *head, int val) {
+void push_last(Nod *head, int val) 
+{
 	Nod *current, *new_nod;
 	current = head;
 	//cat timp elementul la care am ajuns mai are un nod dupa inseamna ca nu este ultimul
@@ -42,7 +76,8 @@ void push_last(Nod *head, int val) {
 }
 
 //adaugam un nou element la pozitia poz
-void push_poz(Nod *head, int poz, int val) {
+void push_poz(Nod *head, int poz, int val) 
+{
 	int iterator;                               //declaram un iterator cu care ne vom plimba prin lista
 	Nod *current;                               //declaram un nod cu care ne vom plimba prin lista
 	Nod *added_node;                            //declaram nodul pe care il vom adauga
@@ -60,7 +95,8 @@ void push_poz(Nod *head, int poz, int val) {
 }
 
 //extragem primul element din lista, ca la stiva
-int pop_first(Nod * head) {
+int pop_first(Nod * head) 
+{
 	int value;                                  //o variabila pe care o voi returna
 	Nod *primul_element;                        //declar primul element
 	primul_element = head->next;                  //primul element primeste adresa elementului dupa head
@@ -71,7 +107,8 @@ int pop_first(Nod * head) {
 }
 
 //extragem ultimul element din lista
-int pop_last(Nod * head) {
+int pop_last(Nod * head) 
+{
 	Nod *current, *deleted_node;                 //declar doua noduri
 	int value;                                  //o variabila pe care o voi returna
 	current = head->next;                         //nodul curent devine primul element din lista
@@ -87,7 +124,8 @@ int pop_last(Nod * head) {
 	return value;                               //returnam valoarea ultimului element
 }
 
-int pop_poz(Nod *head, int poz) {
+int pop_poz(Nod *head, int poz) 
+{
 	int iterator;                               //declaram un iterator cu care ne vom plimba prin lista
 	int value;
 	Nod *current;                               //declaram un nod cu care ne vom plimba prin lista
@@ -110,9 +148,9 @@ void mergesort(float vector[100000],int beg,int end,float B[100000])
 	if (end - beg <= 1)                      
 		return;                                											
 	int mid = (end + beg) / 2;              
-	MergeSort(vector, beg, mid,B);
-	MergeSort(vector, mid, end,B);
-	MergeParts(vector, beg, mid, end,B);
+	mergesort(vector, beg, mid,B);
+	mergesort(vector, mid, end,B);
+	mergeparts(vector, beg, mid, end,B);
 	for (int k = beg;k < end;k++)
 		vector[k] = B[k];							          
 }
@@ -131,7 +169,7 @@ void addtoheap(struct node *root, int value)
 			root->left = n;
 		}
 		else
-			AddtoHeap(root->left, value);
+			addtoheap(root->left, value);
 	}
 	else
 	{
@@ -145,17 +183,17 @@ void addtoheap(struct node *root, int value)
 			root->right = n;
 		}
 		else
-			AddtoHeap(root->right, value);
+			addtoheap(root->right, value);
 	}
 }
 
 void heapsort(struct node *root)
 {
 	if (root->left != NULL)
-		HeapSort(root->left);
+		heapsort(root->left);
 	printf("%d ", root->data);
 	if (root->right != NULL)
-		HeapSort(root->right);
+		heapsort(root->right);
 }
 
 void constructheap(int n,struct node *root)
@@ -164,7 +202,7 @@ void constructheap(int n,struct node *root)
 	for (int i = 1;i <= n-1;i++)
 	{
 		scanf("%d", &el);
-		AddtoHeap(root, el);
+		addtoheap(root, el);
 	}
 }
 
