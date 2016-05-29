@@ -13,6 +13,12 @@ typedef struct Nod
 	struct Nod * next;                          //pointeri catre elementul urmator
 }Nod;
 
+int getMax(int arr[], int n);
+
+void swapp(int* a, int* b);
+
+int rucsac(int n, int g);
+
 void print_list(Nod *head);
 
 void push_first(Nod *head, int val);
