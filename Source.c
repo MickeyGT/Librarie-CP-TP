@@ -60,9 +60,9 @@ int main()
 	root->right = NULL;
 	scanf("%d", &el);
 	root->data = el;
-	ConstructHeap(n,root);
+	constructheap(n,root);
 	printf("The sorted elements from Heap:\n");
-	HeapSort(root);
+	heapsort(root);
 	*/
 
 	//////////////////////////////////////////////////
@@ -71,7 +71,7 @@ int main()
 	printf("N=");
 	scanf("%i", &n);
 	readarray(n, v);
-	MergeSort(v, 1, n+1,v1);
+	mergesort(v, 1, n+1,v1);
 	printarray(n, v1);
 	*/
 
@@ -108,7 +108,7 @@ int main()
 
 	//////////////////////////////////////////////////
 
-
+	/*
 	FILE *f;
 	f= fopen("file.in","r");
 	fscanf(f,"%d", &n);
@@ -120,6 +120,7 @@ int main()
 	dfs(1, n);
 	printf("\n");
 	bfs(n, 1);
+	*/
 	system("pause");
 	return 0;
 }
