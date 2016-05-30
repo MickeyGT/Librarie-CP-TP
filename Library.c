@@ -145,13 +145,14 @@ int pop_poz(Nod *head, int poz)
 
 void mergesort(float vector[100000],int beg,int end,float B[100000])
 {
+	int mid, k;
 	if (end - beg <= 1)                      
 		return;                                											
-	int mid = (end + beg) / 2;              
+    mid = (end + beg) / 2;              
 	mergesort(vector, beg, mid,B);
 	mergesort(vector, mid, end,B);
 	mergeparts(vector, beg, mid, end,B);
-	for (int k = beg;k < end;k++)
+	for (k = beg;k < end;k++)
 		vector[k] = B[k];							          
 }
 
@@ -198,8 +199,8 @@ void heapsort(struct node *root)
 
 void constructheap(int n,struct node *root)
 {
-	int el;
-	for (int i = 1;i <= n-1;i++)
+	int el,k;
+	for (k = 1;k <= n - 1;k++)
 	{
 		scanf("%d", &el);
 		addtoheap(root, el);
@@ -208,11 +209,11 @@ void constructheap(int n,struct node *root)
 
 void mergeparts(float A[100000],int beg,int mid,int end,float B[100000])
 {
-	int ind1, ind2;
+	int ind1, ind2,k;
 	//float B[100000];
 	ind1 = beg;
 	ind2 = mid;
-	for (int k = beg; k < end; k++)
+	for (k = beg; k < end; k++)
 	{
 		if ((ind1 < mid) && ((ind2 >= end)|| (A[ind1] <= A[ind2])))
 		{
@@ -230,19 +231,19 @@ void mergeparts(float A[100000],int beg,int mid,int end,float B[100000])
 
 void readarray(int n, float vector[100000])
 {
-	int i;
-	for (i = 1;i <= n;i++)
+	int k;
+	for (k = 1;k <= n;k++)
 	{
-		printf("Element[%d]=", i);
-		scanf("%f", &vector[i]);
+		printf("Element[%d]=", k);
+		scanf("%f", &vector[k]);
 	}
 }
 
 void printarray(int n, float vector[100000])
 {
-	int i;
-	for (i = 1;i <= n;i++)
-		printf("%f ", vector[i]);
+	int k;
+	for (k = 1;k <= n;k++)
+		printf("%f ", vector[k]);
 	printf("\n");
 
 }
