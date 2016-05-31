@@ -2,7 +2,86 @@
 #include<stdio.h>
 #include<stdlib.h>
 float v[100000], v1[100000];
-int n, el,i,nr, vizitat[100],matrice[100][100],j;
+int n, el,i,nr, vizitat[100],matrice[100][100],j,q,ok;
+
+void inline init(int k)
+{
+	vizitat[k] = 0;
+}
+
+int succesor(int k)
+{
+	if (vizitat[k]<n)
+	{
+		++vizitat[k];
+		return 1;
+	}
+	return 0;
+}
+
+int solution(int k)
+{
+	return k == n;
+}
+void printSolution(int k)
+{
+	for (j = 1;j <= k;j++)
+		printf("%d ", vizitat[j]);
+	printf("%c", '\n');
+}
+int valid(int k)
+{
+	for (j = 1;j<k;j++)
+		if (vizitat[j] == vizitat[k])
+			return 0;
+	return 1;
+}
+void bkt(int k)
+{
+	init(k);
+	while (succesor(k))
+	{
+		if (valid(k))
+		{
+			if (solution(k))
+				printSolution(k);
+			else
+				bkt(k + 1);
+		}
+	}
+}
+
+void back(int k)
+{
+	int i;
+	for (i = vizitat[k - 1] + 1;i <= n;i++)
+	{
+		vizitat[k] = i;
+		if (k == q)
+			printSolution(k);
+		if (k<q)
+			back(k + 1);
+	}
+
+}
+
+int count_coin(int S[], int m, int n) {
+	int i, j, x, y;
+	memset(matrice, 0, sizeof(matrice));
+	for (i = 0; i<m; i++)
+		matrice[0][i] = 1;
+
+	for (i = 1; i < n + 1; i++)
+	{
+		for (j = 0; j < m; j++)
+		{
+			x = (i - S[j] >= 0) ? matrice[i - S[j]][j] : 0;
+			y = (j >= 1) ? matrice[i][j - 1] : 0;
+			matrice[i][j] = x + y;
+		}
+	}
+	return matrice[n][m - 1];
+}
 
 void dfs(int root, int number)
 {
@@ -121,6 +200,43 @@ int main()
 	printf("\n");
 	bfs(n, 1);
 	*/
+
+	/////////////////////////////////////////////////
+
+	//printf("%d",rucsac(5, 15));
+
+	/////////////////////////////////////////////////
+
+	/*
+	printf("n=");
+	scanf("%d", &n);
+	for (j = 0;j < n;j++)
+		scanf("%d", &vizitat[j]);
+	printf("%d", count_coin(vizitat, n, 26));
+	*/
+
+	/////////////////////////////////////////////////
+
+	/*
+	//Permutari
+	printf("n=");
+	scanf("%d", &n);
+	bkt(1);
+	*/
+
+	//////////////////////////////////////////////////
+
+	/*
+	//Combinari
+	printf("n=");
+	scanf("%d", &n);
+	printf("q=");
+	scanf("%d", &q);
+	back(1);
+	*/
+
+	/////////////////////////////////////////////////
+
 	system("pause");
 	return 0;
 }
