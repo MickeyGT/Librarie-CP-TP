@@ -1,250 +1,242 @@
-#include"Library.h"
+#include "Library.h"
 #include<stdio.h>
 #include<stdlib.h>
+float v[100000], v1[100000];
+int n, el,i,nr, vizitat[100],matrice[100][100],j,q,ok;
 
-int getMax(int arr[], int n) {
-	int mx = arr[0], i;
-	for (i = 1; i < n; i++)
-		if (arr[i] > mx)
-			mx = arr[i];
-	return mx;
-}
-
-void swapp(int* a, int* b) {
-	int t = *a;
-	*a = *b;
-	*b = t;
-}
-
-int rucsac(int n, int g) {
-	static int d[100], w[100], p[100], i, j, ans;
-	for (i = 1; i <= n; i++)
-		scanf("%d%d", &w[i], &p[i]);
-	d[0] = 1;
-
-	for (i = 1; i <= n; i++)
-		for (j = g; j >= w[i]; j--)
-			if (d[j - w[i]] && p[i] + d[j - w[i]] >= d[j])
-				d[j] = p[i] + d[j - w[i]];
-
-	for (i = 0; i <= g; i++) {
-		if (d[i]>ans)
-			ans = d[i];
-	}
-	return ans - 1;
-}
-
-void print_list(Nod *head) 
+void inline init(int k)
 {
-	if (head->next != NULL) {                     // daca lista nu este goala
-		Nod *current = head;                    //nodul curent primeste head
-		do {
-			current = current->next;            //nodul curent primeste urmatorul element
-			printf("%d,", current->data);       //printeaza valoarea nodului curent
-		} while (current->next != NULL);
-		printf("\n");
-	}
-	else {
-		printf("Lista este goala\n");           //daca dupa nodul head nu mai avem alte elemente
-	}
+	vizitat[k] = 0;
 }
 
-// adaugam elemente din stanga listei, ca la stiva
-void push_first(Nod *head, int val)
+int succesor(int k)
 {
-	Nod *new_nod;                               //creez un nod nou
-	new_nod = (Nod*)malloc(sizeof(Nod));        // aloc memmorie pentru noul nod
-	new_nod->data = val;                        //se da valoarea noului element
-	new_nod->next = head->next;                 //noul nod va pointa catre al doilea element (ex primul)
-	head->next = new_nod;                       //head-ul va pointa catre noul nod creat
-}
-
-//adaugam elemente la dreapta listei, ca la vector
-void push_last(Nod *head, int val) 
-{
-	Nod *current, *new_nod;
-	current = head;
-	//cat timp elementul la care am ajuns mai are un nod dupa inseamna ca nu este ultimul
-	while (current->next != NULL) {
-		current = current->next;
-	}
-	//current va avea acum adresa ultimului element
-	new_nod = (Nod*)malloc(sizeof(Nod));        // aloc memmorie pentru noul
-	current->next = new_nod;                      //ultimul nod va pointa acum catre noul nod creat
-	new_nod->data = val;                          //i se atribuie o valoare noului nod
-	new_nod->next = NULL;                         //noul nod devine ultimul deci va pointa catre NULL
-}
-
-//adaugam un nou element la pozitia poz
-void push_poz(Nod *head, int poz, int val) 
-{
-	int iterator;                               //declaram un iterator cu care ne vom plimba prin lista
-	Nod *current;                               //declaram un nod cu care ne vom plimba prin lista
-	Nod *added_node;                            //declaram nodul pe care il vom adauga
-	iterator = 0;                                 //iteratoul va pleca de la inceputul listei
-	current = head;                               //nodul curent pleaca de la head
-												  //atat timp cat nu am ajuns la pozitia ceruta
-	while (iterator<poz) {
-		current = current->next;
-		iterator++;
-	}
-	added_node = (Nod*)malloc(sizeof(Nod));      //alocam in memorie noul nod
-	added_node->next = current->next;             //noul nod se va adresa la urmatorul dupa curent
-	current->next = added_node;                   //nodul current va adresa noul nod adaugat
-	added_node->data = val;                       //dam nodului o valoare
-}
-
-//extragem primul element din lista, ca la stiva
-int pop_first(Nod * head) 
-{
-	int value;                                  //o variabila pe care o voi returna
-	Nod *primul_element;                        //declar primul element
-	primul_element = head->next;                  //primul element primeste adresa elementului dupa head
-	value = primul_element->data;                 //in value vom retine valoarea primului element
-	head->next = primul_element->next;            //head va primi adresa celui de-al doilea element
-	free(primul_element);                       //dealocam din memorie primul element
-	return value;                               //returnam valoarea primului element
-}
-
-//extragem ultimul element din lista
-int pop_last(Nod * head) 
-{
-	Nod *current, *deleted_node;                 //declar doua noduri
-	int value;                                  //o variabila pe care o voi returna
-	current = head->next;                         //nodul curent devine primul element din lista
-												  //cat timp nu am ajuns la penultimul element
-	while (current->next->next != NULL) {
-		current = current->next;
-	}
-	//current devine penultimul nod
-	deleted_node = current->next;                 //deleted_node devine ultimul nod
-	value = deleted_node->data;                   //preluam valuare in value a ultimului nod
-	free(deleted_node);                         //dealocam ultimul nod
-	current->next = NULL;                         //nodul curent devine ultimul deci va primi NULL la adresa urmatorului element
-	return value;                               //returnam valoarea ultimului element
-}
-
-int pop_poz(Nod *head, int poz) 
-{
-	int iterator;                               //declaram un iterator cu care ne vom plimba prin lista
-	int value;
-	Nod *current;                               //declaram un nod cu care ne vom plimba prin lista
-	Nod *deleted_node;                          //declaram nodul pe care il vom adauga
-	iterator = 0;                                 //iteratoul va pleca de la inceputul listei
-	current = head;                               //nodul curent pleaca de la head
-												  //atat timp cat nu am ajuns la pozitia ceruta
-	while (iterator<poz - 1) {
-		current = current->next;
-		iterator++;
-	}
-	deleted_node = current->next;                 //nodul ce va fi sters este urmatorul
-	value = deleted_node->data;                   //in value retinem informatia din nodul ce va fi sters
-	current->next = deleted_node->next;           //nodul curent va adresa
-	free(deleted_node);
-}
-
-void mergesort(float vector[100000],int beg,int end,float B[100000])
-{
-	int mid, k;
-	if (end - beg <= 1)                      
-		return;                                											
-    mid = (end + beg) / 2;              
-	mergesort(vector, beg, mid,B);
-	mergesort(vector, mid, end,B);
-	mergeparts(vector, beg, mid, end,B);
-	for (k = beg;k < end;k++)
-		vector[k] = B[k];							          
-}
-
-void addtoheap(struct node *root, int value)
-{
-	if (value < root->data)
+	if (vizitat[k]<n)
 	{
-		if (root->left == NULL)
-		{
-			struct node *n;
-			n = (struct node*)malloc(sizeof(struct node));
-			n->data = value;
-			n->left = NULL;
-			n->right = NULL;
-			root->left = n;
-		}
-		else
-			addtoheap(root->left, value);
+		++vizitat[k];
+		return 1;
 	}
-	else
-	{
-		if (root->right == NULL)
-		{
-			struct node *n;
-			n = (struct node*)malloc(sizeof(struct node));
-			n->data = value;
-			n->left = NULL;
-			n->right = NULL;
-			root->right = n;
-		}
-		else
-			addtoheap(root->right, value);
-	}
+	return 0;
 }
 
-void heapsort(struct node *root)
+int solution(int k)
 {
-	if (root->left != NULL)
-		heapsort(root->left);
-	printf("%d ", root->data);
-	if (root->right != NULL)
-		heapsort(root->right);
+	return k == n;
 }
-
-void constructheap(int n,struct node *root)
+void printSolution(int k)
 {
-	int el,k;
-	for (k = 1;k <= n - 1;k++)
-	{
-		scanf("%d", &el);
-		addtoheap(root, el);
-	}
+	for (j = 1;j <= k;j++)
+		printf("%d ", vizitat[j]);
+	printf("%c", '\n');
 }
-
-void mergeparts(float A[100000],int beg,int mid,int end,float B[100000])
+int valid(int k)
 {
-	int ind1, ind2,k;
-	//float B[100000];
-	ind1 = beg;
-	ind2 = mid;
-	for (k = beg; k < end; k++)
+	for (j = 1;j<k;j++)
+		if (vizitat[j] == vizitat[k])
+			return 0;
+	return 1;
+}
+void bkt(int k)
+{
+	init(k);
+	while (succesor(k))
 	{
-		if ((ind1 < mid) && ((ind2 >= end)|| (A[ind1] <= A[ind2])))
+		if (valid(k))
 		{
-			B[k] = A[ind1];
-			ind1 = ind1 + 1;
-		}
-		else 
-		{
-			B[k] = A[ind2];
-			ind2 = ind2 + 1;
+			if (solution(k))
+				printSolution(k);
+			else
+				bkt(k + 1);
 		}
 	}
+}
+
+void back(int k)
+{
+	int i;
+	for (i = vizitat[k - 1] + 1;i <= n;i++)
+	{
+		vizitat[k] = i;
+		if (k == q)
+			printSolution(k);
+		if (k<q)
+			back(k + 1);
+	}
 
 }
 
-void readarray(int n, float vector[100000])
+int count_coin(int S[], int m, int n) {
+	int i, j, x, y;
+	memset(matrice, 0, sizeof(matrice));
+	for (i = 0; i<m; i++)
+		matrice[0][i] = 1;
+
+	for (i = 1; i < n + 1; i++)
+	{
+		for (j = 0; j < m; j++)
+		{
+			x = (i - S[j] >= 0) ? matrice[i - S[j]][j] : 0;
+			y = (j >= 1) ? matrice[i][j - 1] : 0;
+			matrice[i][j] = x + y;
+		}
+	}
+	return matrice[n][m - 1];
+}
+
+void dfs(int root, int number)
 {
 	int k;
-	for (k = 1;k <= n;k++)
+	vizitat[root] = 1;
+	for (k = 1;k <= number;k++)
+		if (matrice[root][k] && !vizitat[k])
+		{
+			printf("\n%d->%d", root, k);
+			dfs(k, number);
+		}
+}
+
+void bfs( int number, int v)
+{
+    int front, rear,k;
+	int que[20];
+	front = rear = -1;
+	for (k = 1;k <= number;k++)
+		vizitat[k] = 0;
+
+	printf("%d ", v);
+	vizitat[v] = 1;
+	rear++;
+	front++;
+	que[rear] = v;
+
+	while (front <= rear)
 	{
-		printf("Element[%d]=", k);
-		scanf("%f", &vector[k]);
+		v = que[front]; // delete from queue 
+			front++;
+			for (k = 1;k <= number;k++)
+		{
+			// Check for adjacent unvisited nodes 
+				if (matrice[v][k] == 1 && vizitat[k] == 0)
+				{
+					printf("%d ", k);
+					vizitat[k] = 1;
+					rear++;
+					que[rear] = k;
+				}
+		}
 	}
 }
 
-void printarray(int n, float vector[100000])
+int main()
 {
-	int k;
-	for (k = 1;k <= n;k++)
-		printf("%f ", vector[k]);
+	/*
+	printf("N=");
+	scanf("%i", &n);
+	printf("Print %d elements:\n", n);
+	struct node *root;
+	root = (struct node*) malloc(sizeof(struct node));
+	root->left = NULL;
+	root->right = NULL;
+	scanf("%d", &el);
+	root->data = el;
+	constructheap(n,root);
+	printf("The sorted elements from Heap:\n");
+	heapsort(root);
+	*/
+
+	//////////////////////////////////////////////////
+
+	/*
+	printf("N=");
+	scanf("%i", &n);
+	readarray(n, v);
+	mergesort(v, 1, n+1,v1);
+	printarray(n, v1);
+	*/
+
+	//////////////////////////////////////////////////
+
+	/*
+	Nod * head = NULL; // creez nodul de start
+	head = (Nod*)malloc(sizeof(Nod)); // aloc memorie pentru nodul de start
+	head->next = NULL;
+
+	//verific ca nodul de start sa fie alocat
+	if (head->data == NULL) {
+		printf("Lista este goala\n");
+	}
+	push_last(head, 1);
+	push_last(head, 2);
+	push_last(head, 3);
+	push_first(head, 0);
+	print_list(head);
+	pop_last(head);
+	pop_first(head);
+	print_list(head);
+	push_last(head, 3);
+	push_poz(head, 1, 10);
+	print_list(head);
+	pop_poz(head, 3);
+	print_list(head);
+	*/
+	/*scanf("%d", &nr);
+	for (i = 1;i <= nr;i++)
+		for (j = 1;j <= nr;j++)
+			scanf("%d", &matrice[i][j]);
+	*/
+
+	//////////////////////////////////////////////////
+
+	/*
+	FILE *f;
+	f= fopen("file.in","r");
+	fscanf(f,"%d", &n);
+	for (i = 1;i<=n;i++)
+		vizitat[i] = 0;
+	for (i = 1;i <= n;i++)
+		for (j = 1;j <= n;j++)
+			fscanf(f,"%d ", &matrice[i][j]);
+	dfs(1, n);
 	printf("\n");
+	bfs(n, 1);
+	*/
 
+	/////////////////////////////////////////////////
+
+	//printf("%d",rucsac(5, 15));
+
+	/////////////////////////////////////////////////
+
+	/*
+	printf("n=");
+	scanf("%d", &n);
+	for (j = 0;j < n;j++)
+		scanf("%d", &vizitat[j]);
+	printf("%d", count_coin(vizitat, n, 26));
+	*/
+
+	/////////////////////////////////////////////////
+
+	/*
+	//Permutari
+	printf("n=");
+	scanf("%d", &n);
+	bkt(1);
+	*/
+
+	//////////////////////////////////////////////////
+
+	/*
+	//Combinari
+	printf("n=");
+	scanf("%d", &n);
+	printf("q=");
+	scanf("%d", &q);
+	back(1);
+	*/
+
+	/////////////////////////////////////////////////
+
+	system("pause");
+	return 0;
 }
-
