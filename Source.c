@@ -1,8 +1,45 @@
 #include "Library.h"
 #include<stdio.h>
 #include<stdlib.h>
-float v[100000], v1[100000];
-int n, el,i,nr, vizitat[100],matrice[100][100],j,q,ok;
+int v1[100000],v2[100000],v3[100000];
+int n, el,i,nr, vizitat[100],matrice[100][100],j,q,ok,v[100000];
+#define min(a,b) (((a)<(b)) ? (a) : (b))
+void matrixchainmultiplication()
+{
+	for (i = 3;i <= n;i++)
+	{
+		for (j = 1;j + i - 1 <= n;j++)
+		{
+			el = j + i - 1;
+			matrice[j][el] = 100000000;
+			for (q = j + 1;q <= el - 1;q++)
+			{
+				matrice[j][el] = min(matrice[j][el], matrice[j][q] + matrice[q][el] + v[j]*v[q]*v[el]);
+			}
+		}
+	}
+	printf("%d \n", matrice[1][n]);
+}
+
+void queens(int k) 
+{
+	if (k == n + 1) {
+		if (!nr) {
+			for (int i = 1;i <= n;i++)
+				printf("%d ",v[i]);
+		}
+		nr++;
+		return;
+	}
+
+	for (int i = 1;i <= n;i++)
+		if (!v1[i] && !v2[k + i - n] && !v3[k - i + n]) {
+			v1[i] = v2[k + i - n] = v3[k - i + n] = 1;
+			v[k] = i;
+			queens(k + 1);
+			v1[i] = v2[k + i - n] = v3[k - i + n] = 0;
+		}
+}
 
 void inline init(int k)
 {
@@ -236,6 +273,24 @@ int main()
 	*/
 
 	/////////////////////////////////////////////////
+
+	/*
+	printf("n=");
+	scanf("%d", &n);
+	queens(1);
+	printf("\n%d", nr);
+	*/
+
+	//////////////////////////////////////////////////
+
+	/*
+	printf("n=");
+	scanf("%d", &n);
+	n++;
+	for (j = 1;j <= n;j++)
+		scanf("%d", &v[j]);
+	matrixchainmultiplication();
+	*/
 
 	system("pause");
 	return 0;
