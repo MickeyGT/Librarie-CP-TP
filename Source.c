@@ -25,14 +25,14 @@ void queens(int k)
 {
 	if (k == n + 1) {
 		if (!nr) {
-			for (int i = 1;i <= n;i++)
+			for (i = 1;i <= n;i++)
 				printf("%d ",v[i]);
 		}
 		nr++;
 		return;
 	}
 
-	for (int i = 1;i <= n;i++)
+	for (i = 1;i <= n;i++)
 		if (!v1[i] && !v2[k + i - n] && !v3[k - i + n]) {
 			v1[i] = v2[k + i - n] = v3[k - i + n] = 1;
 			v[k] = i;
